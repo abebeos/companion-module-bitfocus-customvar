@@ -6,6 +6,7 @@
 # within companion root
 cd module-local-dev
 git clone https://github.com/abebeos/companion-module-bitfocus-customvar
+cd ..
 yarn dev
 ```
 
