@@ -1,0 +1,37 @@
+{
+	"name": "bitfocus-customvar",
+	"version": "1.0.0",
+	"api_version": "1.0.0",
+	"description": "Custom Variable related actions",
+	"keywords": [],
+	"manufacturer": "Bitfocus",
+	"product": "Customvar",
+	"shortname": "customvar",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-bitfocus-customvar.git"
+	},
+	"author": "Håkon Nessjøen <haakon@bitfocus.io>",
+	"license": "MIT",
+	"contributors": [
+		"William Viker <william@trippelm.no>",
+		"Matt Foulks <mfoulks1@gmail.com>",
+		"JeffreyDavidsz <jeffrey.davidsz@vicreo.eu>",
+		"Jeff Martin <dist@dist.dev>",
+		"John A Knight Jr <istnv@ayesti.com>",
+		"Dorian Meid <dnmeid@gmx.net>",
+		"Bjorn Peterson <bjkarl@yahoo.com>"
+	],
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-bitfocus-customvar/issues"
+	},
+	"homepage": "https://github.com/bitfocus/companion-module-bitfocus-customvar#readme",
+	"dependencies": {
+		"underscore": "^1.13.2",
+		"jsonpath": "^1.1.1"
+	}
+}
