@@ -1,11 +1,11 @@
-# companion-core-customvar
+# companion-module-bitfocus-customvar
 
 ## Testing
 
 ```sh
 # within companion root
 cd module-local-dev
-git clone https://github.com/abebeos/companion-core-customvar
+git clone https://github.com/abebeos/companion-module-bitfocus-customvar
 cd ..
 yarn dev
 ```
