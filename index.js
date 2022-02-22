@@ -12,24 +12,16 @@ function instance(system, id, config) {
 
 	self.system = system
 	
-	// super-constructor
-	instance_skel.apply(this, arguments)
 
+	instance_skel.apply(this, arguments)		// super-constructor
 	self.init()
-
-	self.custom_variables = {}
-
-	system.on('custom_variables_update', self.custom_variable_list_update)
-	self.custom_variable_list_update()
-
-
-
 	return self
 }
 
 instance.prototype.init = function () {
 	let self = this
 
+	self.init_actions()
 	self.status(self.STATE_OK)
 }
 
@@ -48,51 +40,15 @@ instance.prototype.config_fields = function () {
 	]
 }
 
-instance.prototype.addSystemCallback = function (name, cb) {
-	let self = this
-
-	if (self.callbacks[name] === undefined) {
-		self.callbacks[name] = cb.bind(self)
-		self.system.on(name, cb)
-	}
-}
-
-instance.prototype.removeAllSystemCallbacks = function () {
-	let self = this
-
-	for (let key in self.callbacks) {
-		self.system.removeListener(key, self.callbacks[key])
-		delete self.callbacks[key]
-	}
-}
-
-instance.prototype.custom_variable_list_update = function (data) {
-	const self = this
-
-	if (data) {
-		self.custom_variables = data
-	} else {
-		self.system.emit('custom_variables_get', (d) => {
-			self.custom_variables = d
-		})
-	}
-
-	self.update_variables()
-
-	self.init_actions()
-}
-
-
 
 // When module gets deleted
 instance.prototype.destroy = function () {
 	let self = this
-	self.removeAllSystemCallbacks()
 }
 
 instance.prototype.init_actions = function () {
 	let self = this
-//self.debug('init actions')	
+
 	self.FIELD_JSON_DATA_VARIABLE = {
 		type: 'custom-variable',
 		label: 'JSON Result Data Variable',
@@ -163,13 +119,6 @@ instance.prototype.init_actions = function () {
 		},
 	}
 
-	if (self.system.listenerCount('restart') > 0) {
-		// Only offer app_restart if there is a handler for the event
-		actions['app_restart'] = {
-			label: 'Restart companion',
-		}
-	}
-
 	self.system.emit('instance_actions', self.id, actions)
 }
 
@@ -178,14 +127,14 @@ instance.prototype.action = function (action, extras) {
 	let opt = action.options
 
 	//TODO: consider moving this code to lib/variable.js, where the other custom-var code resides
-self.debug('action')
+
 	// extract value from the stored json response data, assign to target variable
 	if (action.action === 'custom_variable_set_via_jsonpath') {
-self.debug('jsonpath')		
+	
 		// get the json response data from the custom variable that holds the data
 		let jsonResultData = ''
-		let variableName = `custom_${action.options.jsonResultDataVariable}`
-		self.system.emit('variable_get', 'internal', variableName, (value) => {
+		//DEL let variableName = `custom_${action.options.jsonResultDataVariable}`
+		self.getCustomVariableValue(action.options.jsonResultDataVariable, (value) => {
 			jsonResultData = value
 			self.debug('jsonResultData', jsonResultData)
 		})
@@ -208,7 +157,8 @@ self.debug('jsonpath')
 			return
 		}
 
-		self.system.emit('custom_variable_set_value', action.options.targetVariable, valueToSet)
+		//DEL self.system.emit('custom_variable_set_value', action.options.targetVariable, valueToSet)
+		self.setCustomVariableValue(action.options.targetVariable, valueToSet)
 
 		return
 	}
@@ -223,23 +173,9 @@ self.debug('jsonpath')
 		let value = ''
 		const id = opt.variable.split(':')
 		self.system.emit('variable_get', id[0], id[1], (v) => (value = v))
-		self.setCustomVariableValue(opt.name, opt.value)
+		//FALSE (need 'internal' variable) self.getCustomVariableValue(id[1], (v) => (value =v))
+		self.setCustomVariableValue(opt.name, value)
 	}
-}
-
-instance.prototype.update_variables = function () {
-	let self = this
-	let variables = []
-
-	for (const [name, info] of Object.entries(self.custom_variables)) {
-		variables.push({
-			label: info.description,
-			name: `custom_${name}`,
-		})
-	}
-
-	self.setVariableDefinitions(variables)
-
 }
 
 instance_skel.extendedBy(instance)
